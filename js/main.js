@@ -45,17 +45,19 @@ const [load_files, load_zip] = (function() {
 	function add_tl_file(filename, b64str) {
 		let text = atob(b64str);
 		let matches = text.matchAll(/(?<jp>[^\0]+)\0(?<en>[^\0]*)\0\0\n/g);
+		let pairs_dict = {};
 		let pairs = [];
 		let match = matches.next();
 		
 		while(!match.done) {
 			let jp = ascii_to_utf8(match.value.groups["jp"]);
 			let en = ascii_to_utf8(match.value.groups["en"]);
-			pairs.push({jp: jp, en: en});
+			pairs_dict[jp] = pairs_dict[jp] || en;
 			
 			match = matches.next();
 		}
 		
+		pairs = $.map(Object.entries(pairs_dict), ([k, v]) => ({jp: k, en: v}));
 		let index = vue.files.findIndex(file => file.name === filename);
 
 		if(index >= 0) {
