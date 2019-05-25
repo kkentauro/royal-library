@@ -7,14 +7,18 @@
 
 		<script src="js/jquery-3.0.0.min.js"></script>
 		<script src="js/vue.js"></script>
+		<script src="js/FileSaver.min.js"></script>
 		<script src="js/translation.js" defer></script>
 	</head>
 	
 	<body>
-		<input type="file" id="upload"></input>
-		<button id="upload_button" onclick="parse_file();">Parse</button>
-		<div id="vue-root">
+		<p>
+			<input type="file" id="upload"></input>
+			<button id="upload_button" onclick="parse_file();">Parse</button>
+			<button id="save_button" onclick="save_file();">Save</button>
+		</p>
+		<p id="vue-root">
 			<vue-root></vue-root>
-		</div>
+		</p>
 	</body>
 </html>
