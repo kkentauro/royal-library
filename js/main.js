@@ -72,7 +72,7 @@ const [load_files, load_zip] = (function() {
 			return 0;
 		});
 		
-		$("#loading").addClass("hidden");
+		$("#loading_indicator").addClass("hidden");
 	};
 	
 	function parse_zip(zip) {
@@ -97,7 +97,7 @@ const [load_files, load_zip] = (function() {
 		if(!file) { return; }
 		if(!confirm_overwrite()) { return; }
 		
-		$("#loading").removeClass("hidden");
+		$("#loading_indicator").removeClass("hidden");
 		
 		JSZip.loadAsync(file)
 			.then(parse_zip)

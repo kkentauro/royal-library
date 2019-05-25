@@ -30,7 +30,7 @@ html, body {
 	position: relative;
 }
 
-#zip_loading {
+#loading_indicator {
 	float: right;
 	padding-right: 20px;
 	font-weight: bold;
