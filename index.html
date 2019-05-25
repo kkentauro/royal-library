@@ -4,21 +4,28 @@
 		<title></title>
 
 		<meta charset="UTF-8">
-
+		<link rel="stylesheet" href="css/jquery-ui.min.css"/>
+		<link rel="stylesheet" href="css/main.css"/>
+		
 		<script src="js/jquery-3.0.0.min.js"></script>
+		<script src="js/jquery-ui.min.js"></script>
 		<script src="js/vue.js"></script>
+		
 		<script src="js/FileSaver.min.js"></script>
-		<script src="js/translation.js" defer></script>
+		<script src="js/jszip.min.js"></script>
+		
+		<script src="js/main.js" defer></script>
+		<script src="js/vue-components.js" defer></script>
 	</head>
 	
 	<body>
-		<p>
-			<input type="file" id="upload"></input>
-			<button id="upload_button" onclick="parse_file();">Parse</button>
+		<div id="filebar">
+			<input type="file" id="upload" multiple></input>
+			<button id="upload_button" onclick="load_files();">Load data files</button>
+			<button id="upload_button_zip" onclick="load_zip();">Load zip</button>
 			<button id="save_button" onclick="save_file();">Save</button>
-		</p>
-		<p id="vue-root">
-			<vue-root></vue-root>
-		</p>
+			<div id="loading" class="hidden">Loading, please wait</div>
+		</div>
+		<div id="vue-root"></div>
 	</body>
 </html>

@@ -1,0 +1,41 @@
+* {
+	outline: none;
+	box-sizing:border-box;
+	user-select: none;
+	margin: 0px;
+}
+
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+#filebar {
+	background-color: white;
+	padding: 10px;
+	position: fixed;
+	top: 0px;
+	width: 100%;
+	height: 40px;
+	z-index: 1;
+}
+
+#main {
+	position: absolute;
+	top: 40px;
+	width: 100%;
+}
+
+#main > * {
+	position: relative;
+}
+
+#zip_loading {
+	float: right;
+	padding-right: 20px;
+	font-weight: bold;
+}
+
+.hidden {
+	display: none;
+}
