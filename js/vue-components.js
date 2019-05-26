@@ -23,7 +23,7 @@ Vue.component("tl-pair", {
 			this.pair.en = value;
 		},
 	},
-	template: "<div style='clear:both;'><div style='float:left; text-align:center; width:4em;'>{{ index }}</div><div style='float:left;'><tl-textarea @changed='change_jp' v-bind:text='pair.jp'></tl-textarea><tl-textarea @changed='change_en' v-bind:text='pair.en'></tl-textarea></div></div>",
+	template: "<div style='clear:both;'><div style='float:left; text-align:center; width:4em;'>{{ index }}</div><div style='float:left;'><tl-textarea @changed='change_jp' v-bind:text='pair.jp' disabled></tl-textarea><tl-textarea @changed='change_en' v-bind:text='pair.en'></tl-textarea></div></div>",
 });
 
 Vue.component("tl-textarea", {
