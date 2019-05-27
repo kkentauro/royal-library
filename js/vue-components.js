@@ -25,12 +25,12 @@ Vue.component("tl-pair", {
 	},
 	template: `
 		<div style='clear:both;'>
-			<div style='float:left; text-align:center; width:4em;'>
+			<div style="float:left; text-align:center; width:4em;">
 				{{ index }}
 			</div>
-			<div style='float:left;'>
+			<div style="float:left;">
 				<textarea rows="5" cols="32" disabled>{{ pair.jp }}</textarea>
-				<tl-textarea @changed='change_en' v-bind:text='pair.en'></tl-textarea>
+				<tl-textarea @changed="change_en" v-bind:text='pair.en'></tl-textarea>
 			</div>
 		</div>`,
 });
