@@ -1,16 +1,10 @@
 
 Vue.component("tl-file", {
 	props: ["file"],
-	methods: {
-		add_pair: function() {
-			this.file.pairs.push({jp: "", en: ""});
-		},
-	},
 	mounted: function() {
 		$(this.$el).accordion({ collapsible: true, active: false });
 	},
-//	template: "<div><tl-pair v-for='(pair, index) in pairs' v-bind:index='index' v-bind:pair='pair'></tl-pair-row><add-pair v-on:add_pair='add_pair();'></add-pair></div>",
-	template: "<div><h3>{{ file.name }}</h3><div><div v-for='(pair, index) in file.pairs'><tl-pair v-bind:index='index' v-bind:pair='pair'></tl-pair></div><add-pair v-on:add_pair='add_pair();'></add-pair></div></div>",
+	template: "<div><h3>{{ file.name }}</h3><div><div v-for='(pair, index) in file.pairs'><tl-pair v-bind:index='index' v-bind:pair='pair'></tl-pair></div></div></div>",
 });
 
 Vue.component("tl-pair", {
@@ -48,11 +42,6 @@ Vue.component("tl-textarea", {
 		},
 	},
 	template: "<textarea rows='5' cols='32' v-model='_text'>{{ _text }}</textarea>",
-});
-
-Vue.component("add-pair", {
-	template: "<div></div>",
-//	template: "<input type='button' id='button' value='Add pair' v-on:click='$emit(`add_pair`)'></input>",
 });
 
 const vue = new Vue({
