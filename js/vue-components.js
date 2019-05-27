@@ -77,13 +77,13 @@ const vue = new Vue({
 		dl_file: function() {
 			if(this.files.length == 0) {
 				return;
+			} else if(this.files.length == 1) {
+				let encoded = this.encode_file(this.files[0]);
+				let blob = new Blob([encoded],{type: "text/plain"});
+				return [blob, global.filename];
 			}
 			
 			let zip = new JSZip();
-			let filename = (this.files.length == 1)
-				? global.filename
-				: "strings.zip";
-			
 			for(let file of this.files) {
 				zip.file(file.name, this.encode_file(file));
 			}
