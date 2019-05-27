@@ -20,6 +20,8 @@ Vue.component("tl-pair", {
 	computed: {
 		jp: function() {
 			return this.pair.jp.replace(/(?<=\n)\n/g, "\n<br/>")
+				.replace("<", "&lt;")
+				.replace(">", "&gt;")
 				.split("\n")
 				.reduce((el, val) =>
 					el.append($("<p>").html(val)), $("<div>"))
