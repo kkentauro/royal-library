@@ -19,13 +19,18 @@ Vue.component("tl-pair", {
 	},
 	computed: {
 		jp: function() {
-			return this.pair.jp.replace(/(?<=\n)\n/g, "\n<br/>")
-				.replace("<", "&lt;")
-				.replace(">", "&gt;")
-				.split("\n")
-				.reduce((el, val) =>
-					el.append($("<p>").html(val)), $("<div>"))
-				.html();
+			let paras = this.pair.jp.split(/\n(?=\n)/g);
+			let div = $("<div>");
+			
+			for(para of paras) {
+				let lines = para.split("\n");
+				lines.reduce((p, line) =>
+					p.append($("<span>").text(line))
+						.append($("<br>")),
+				$("<p>")).appendTo(div);
+			}
+			
+			return div.html();
 		},
 	},
 	template: `
