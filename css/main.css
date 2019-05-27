@@ -1,7 +1,6 @@
 * {
 	outline: none;
 	box-sizing:border-box;
-	user-select: none;
 	margin: 0px;
 }
 
@@ -38,4 +37,35 @@ html, body {
 
 .hidden {
 	display: none;
+}
+
+.tl-pair {
+	clear: both;
+	display: flex;
+	justify-content:center;
+}
+
+.tl-pair > .index {
+	float: left;
+	text-align: center;
+	width: 4em;
+}
+
+.tl-pair > .jp {
+	float: left;
+	width: 16em;
+	min-height: 5em;
+	border: 1px solid gray;
+	background-color: #eeeeee;
+	margin-right: 1em;
+}
+
+.tl-pair > .en {
+	width: 16em;
+	min-height: 5em;
+}
+
+.tl-pair > .en > textarea {
+	width: 100%;
+	height: 100%;
 }

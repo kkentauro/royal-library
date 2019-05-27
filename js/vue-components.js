@@ -17,15 +17,22 @@ Vue.component("tl-pair", {
 			this.pair.en = value;
 		},
 	},
+	computed: {
+		jp: function() {
+			return this.pair.jp.replace(/(?<=\n)\n/g, "\n<br/>")
+				.split("\n")
+				.reduce((el, val) =>
+					el.append($("<p>").html(val)), $("<div>"))
+				.html();
+		},
+	},
 	template: `
-		<div style='clear:both;'>
-			<div style="float:left; text-align:center; width:4em;">
+		<div class="tl-pair">
+			<div class="index">
 				{{ index }}
 			</div>
-			<div style="float:left;">
-				<textarea rows="5" cols="32" disabled>{{ pair.jp }}</textarea>
-				<tl-textarea @changed="change_en" v-bind:text='pair.en'></tl-textarea>
-			</div>
+			<div class="jp" v-html="jp"></div>
+			<div class="en"><tl-textarea class="en2" @changed="change_en" v-bind:text='pair.en'></tl-textarea></div>
 		</div>`,
 });
 
@@ -41,7 +48,7 @@ Vue.component("tl-textarea", {
 			},
 		},
 	},
-	template: "<textarea rows='5' cols='32' v-model='_text'>{{ _text }}</textarea>",
+	template: "<textarea v-model='_text'>{{ _text }}</textarea>",
 });
 
 const vue = new Vue({
