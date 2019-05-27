@@ -4,6 +4,8 @@ library.js
 tools for translating
 **/
 
+const global = {};
+
 const ascii_to_utf8 = function(str) {
 	return decodeURIComponent(escape(str));
 };
@@ -38,6 +40,7 @@ const [load_files, load_zip] = (function() {
 			}
 			
 			fr.readAsText(file);
+			global.filename = upload_form.files[0].name.split("\\").pop();
 		}
 	}
 	

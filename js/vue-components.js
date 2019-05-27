@@ -23,7 +23,16 @@ Vue.component("tl-pair", {
 			this.pair.en = value;
 		},
 	},
-	template: "<div style='clear:both;'><div style='float:left; text-align:center; width:4em;'>{{ index }}</div><div style='float:left;'><tl-textarea @changed='change_jp' v-bind:text='pair.jp' disabled></tl-textarea><tl-textarea @changed='change_en' v-bind:text='pair.en'></tl-textarea></div></div>",
+	template: `
+		<div style='clear:both;'>
+			<div style='float:left; text-align:center; width:4em;'>
+				{{ index }}
+			</div>
+			<div style='float:left;'>
+				<textarea rows="5" cols="32" disabled>{{ pair.jp }}</textarea>
+				<tl-textarea @changed='change_en' v-bind:text='pair.en'></tl-textarea>
+			</div>
+		</div>`,
 });
 
 Vue.component("tl-textarea", {
@@ -68,12 +77,15 @@ const vue = new Vue({
 			}
 			
 			let zip = new JSZip();
+			let filename = (this.files.length == 1)
+				? global.filename
+				: "strings.zip";
 			
 			for(let file of this.files) {
 				zip.file(file.name, this.encode_file(file));
 			}
 			
-			return [zip.generateAsync({type:"blob"}), "strings.zip"];
+			return [zip.generateAsync({type:"blob"}), filename];
 		},
 	},
 	el: "#vue-root",
