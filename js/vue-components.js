@@ -88,7 +88,7 @@ const vue = new Vue({
 				zip.file(file.name, this.encode_file(file));
 			}
 			
-			return [zip.generateAsync({type:"blob"}), filename];
+			return [zip.generateAsync({type:"blob"}), "strings.zip"];
 		},
 	},
 	el: "#vue-root",

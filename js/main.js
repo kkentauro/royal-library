@@ -25,26 +25,6 @@ const [load_files, load_zip] = (function() {
 		return true;
 	}
 	
-	function load_files() {
-		let upload_form = $("#upload")[0];
-		
-		if(!upload_form.files) { return; }
-		if(!confirm_overwrite()) { return; }
-		
-		for(let file of upload_form.files) {
-			let fr = new FileReader();
-			
-			fr.onload = function(e) {
-				add_tl_file(file.name, e.target.result);
-				done_loading();
-			}
-			
-			fr.readAsText(file);
-			global.filename = upload_form.files[0].name.split("\\").pop();
-		}
-	}
-	
-	
 	function add_tl_file(filename, b64str) {
 		let text = atob(b64str);
 		let matches = text.matchAll(/(?<jp>[^\0]+)\0(?<en>[^\0]*)\0\0\n/g);
@@ -84,6 +64,10 @@ const [load_files, load_zip] = (function() {
 		let promises = [];
 		
 		for(let file of Object.values(zip.files)) {
+			if(file.dir == true) {
+				continue;
+			}
+			
 			let promise = file.async("text")
 				.then(text => add_tl_file(file.name, text))
 				.finally();
@@ -93,6 +77,25 @@ const [load_files, load_zip] = (function() {
 		
 		return Promise.all(promises)
 			.then(done_loading);
+	}
+	
+	function load_files() {
+		let upload_form = $("#upload")[0];
+		
+		if(!upload_form.files) { return; }
+		if(!confirm_overwrite()) { return; }
+		
+		for(let file of upload_form.files) {
+			let fr = new FileReader();
+			
+			fr.onload = function(e) {
+				add_tl_file(file.name, e.target.result);
+				done_loading();
+			}
+			
+			fr.readAsText(file);
+			global.filename = upload_form.files[0].name.split("\\").pop();
+		}
 	}
 	
 	function load_zip() {
