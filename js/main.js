@@ -38,15 +38,15 @@ const [load_files, load_zip] = (function() {
 		let index = vue.files.findIndex(file => file.name === filename);
 		if(index >= 0) {
 			// splice removes old file
-			let old_file = vue.files.splice(index, 1)[0];
-			let old_pairs = old_file.pairs.map(pair => ({[pair.jp]: pair.en}));
-			tl_map = Object.assign(tl_map, ...old_pairs);
+			let old_file = vue.files.splice(index, 1)[0].pairs;
+			let old_map = old_pairs.map(pair => ({[pair.jp]: pair.en || ""}));
+			tl_map = Object.assign(tl_map, ...old_map);
 		}
 		
 		while(!match.done) {
 			let jp = ascii_to_utf8(match.value.groups["jp"]) || "";
 			let en = ascii_to_utf8(match.value.groups["en"]) || "";
-			pairs_dict[jp] = en || tl_map[jp] || "";
+			pairs_dict[jp] = en || tl_map[jp];
 			
 			match = matches.next();
 		}
