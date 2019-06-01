@@ -27,25 +27,31 @@ const [load_files, load_zip] = (function() {
 	
 	function add_tl_file(filename, b64str) {
 		let text = atob(b64str);
-		let matches = text.matchAll(/(?<jp>[^\0]+)\0(?<en>[^\0]*)\0\0\n/g);
+		let regex = /(?<jp>[^\0]+)\0(?<en>[^\0]*)\0\0(?:\n|$)/g;
+		let matches = text.matchAll(regex);
 		let pairs_dict = {};
 		let pairs = [];
 		let match = matches.next();
+		let tl_map = {};
+		
+		// keep old translations if nothing to replace them with
+		let index = vue.files.findIndex(file => file.name === filename);
+		if(index >= 0) {
+			// splice removes old file
+			let old_file = vue.files.splice(index, 1)[0];
+			let old_pairs = old_file.pairs.map(pair => ({[pair.jp]: pair.en}));
+			tl_map = Object.assign(tl_map, ...old_pairs);
+		}
 		
 		while(!match.done) {
-			let jp = ascii_to_utf8(match.value.groups["jp"]);
-			let en = ascii_to_utf8(match.value.groups["en"]);
-			pairs_dict[jp] = pairs_dict[jp] || en;
+			let jp = ascii_to_utf8(match.value.groups["jp"]) || "";
+			let en = ascii_to_utf8(match.value.groups["en"]) || "";
+			pairs_dict[jp] = en || tl_map[jp] || "";
 			
 			match = matches.next();
 		}
 		
 		pairs = $.map(Object.entries(pairs_dict), ([k, v]) => ({jp: k, en: v}));
-		let index = vue.files.findIndex(file => file.name === filename);
-
-		if(index >= 0) {
-			vue.files.splice(index, 1);
-		}
 		
 		vue.files.push({name: filename, pairs: pairs});
 	}
