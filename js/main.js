@@ -38,7 +38,7 @@ const [load_files, load_zip] = (function() {
 		let index = vue.files.findIndex(file => file.name === filename);
 		if(index >= 0) {
 			// splice removes old file
-			let old_file = vue.files.splice(index, 1)[0].pairs;
+			let old_file = vue.files.splice(index, 1)[0];
 			let old_pairs = old_file.pairs.map(pair => ({[pair.jp]: pair.en}));
 			tl_map = Object.assign(tl_map, ...old_pairs);
 		}
@@ -57,7 +57,7 @@ const [load_files, load_zip] = (function() {
 	}
 	
 	function done_loading() {
-		vue.files = vue.files.sort(function(a, b){
+		vue.files = vue.files.sort(function(a, b) {
 			if(a.name.toLowerCase() < b.name.toLowerCase()) { return -1; }
 			if(a.name.toLowerCase() > b.name.toLowerCase()) { return  1; }
 			return 0;
