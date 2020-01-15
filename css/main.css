@@ -34,6 +34,11 @@ html, body {
 	font-weight: bold;
 }
 
+#root {
+	position: relative;
+	top: 40px;
+}
+
 .hidden {
 	display: none;
 }
