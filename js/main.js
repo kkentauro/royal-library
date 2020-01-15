@@ -4,7 +4,7 @@ library.js
 tools for translating
 **/
 
-const global = {};
+const files = {};
 
 const ascii_to_utf8 = function(str) {
 	return decodeURIComponent(escape(str));
@@ -16,7 +16,7 @@ const utf8_to_ascii = function(str) {
 
 const [load_files, load_zip] = (function() {
 	function confirm_overwrite() {
-		if(vue.files.length > 0) {
+		if(Object.keys(files).length > 0) {
 			if(!confirm("This will overwrite duplicate files. Continue?")) {
 				return false;
 			}
@@ -25,44 +25,77 @@ const [load_files, load_zip] = (function() {
 		return true;
 	}
 	
-	function add_tl_file(filename, b64str) {
-		let text = atob(b64str);
-		let regex = /(?<jp>[^\0]+)\0(?<en>[^\0]*)\0\0(?:\n|$)/g;
-		let matches = text.matchAll(regex);
-		let pairs_dict = {};
-		let pairs = [];
-		let match = matches.next();
-		let tl_map = {};
+	function add_tl_file(filename, jsonstr) {
+		const old_data = (filename in files) ? files[filename] : {};
+		const new_data = JSON.parse(jsonstr);
+		const old_pairs = old_data.pairs || {};
+		const new_pairs = new_data.pairs;
+		const tl_map = old_pairs;
 		
-		// keep old translations if nothing to replace them with
-		let index = vue.files.findIndex(file => file.name === filename);
-		if(index >= 0) {
-			// splice removes old file
-			let old_file = vue.files.splice(index, 1)[0].pairs;
-			let old_pairs = old_file.pairs.map(pair => ({[pair.jp]: pair.en}));
-			tl_map = Object.assign(tl_map, ...old_pairs);
+		for(let key in new_pairs) {
+			if(new_pairs[key] || !old_pairs[key]) {
+				tl_map[key] = new_pairs[key];
+			}
 		}
 		
-		while(!match.done) {
-			let jp = ascii_to_utf8(match.value.groups["jp"]) || "";
-			let en = ascii_to_utf8(match.value.groups["en"]) || "";
-			pairs_dict[jp] = en || tl_map[jp] || "";
+		files[filename] = {pairs: tl_map};
+	}
+	
+	function build_text_boxes() {
+		const root = $("#root");
+		let file_divs = [];
+		root.empty();
+		
+		for(let fname in files) {
+			const filename = fname;
+			const file = files[filename];
+			const tl_pairs = file.pairs;
+			const pairs_div = $("<div>");
+			const outer = $("<div>")
+				.append($("<h3>").text(filename))
+				.append(pairs_div);
 			
-			match = matches.next();
+			for(let jp in tl_pairs) {
+				const jp_box = $("<textarea>")
+					.text(jp)
+					.prop("cols", 40)
+					.prop("rows", 4)
+					.prop("disabled", true);
+				const en_box = $("<textarea>")
+					.prop("cols", 40)
+					.prop("rows", 4)
+					.text(tl_pairs[jp]);
+				
+				en_box.on("keydown", function() {
+					files[filename].pairs[jp] = en_box.val()
+				});
+				
+				pairs_div.append($("<p>").append(jp_box).append(en_box));
+			}
+			
+			outer.attr("filename", filename);
+			
+			if(root.children().length == 0) {
+				root.append(outer);
+				continue;
+			} else {
+				let child;
+				for(let i = 0; i < root.children().length; i++) {
+					child = $(root.children()[i]);
+				
+					if(outer.attr("filename").toLowerCase() < child.attr("filename").toLowerCase()) {
+						break;
+					}
+				}
+				outer.insertAfter(child);
+			}
 		}
 		
-		pairs = $.map(Object.entries(pairs_dict), ([k, v]) => ({jp: k, en: v}));
-		
-		vue.files.push({name: filename, pairs: pairs});
+		root.children().accordion({collapsible: true, active: false});
 	}
 	
 	function done_loading() {
-		vue.files = vue.files.sort(function(a, b){
-			if(a.name.toLowerCase() < b.name.toLowerCase()) { return -1; }
-			if(a.name.toLowerCase() > b.name.toLowerCase()) { return  1; }
-			return 0;
-		});
-		
+		build_text_boxes();
 		$("#loading_indicator").addClass("hidden");
 	};
 	
@@ -96,12 +129,13 @@ const [load_files, load_zip] = (function() {
 			
 			fr.onload = function(e) {
 				add_tl_file(file.name, e.target.result);
-				done_loading();
 			}
 			
 			fr.readAsText(file);
-			global.filename = upload_form.files[0].name.split("\\").pop();
+//			filename = upload_form.files[0].name.split("\\").pop();
 		}
+		
+		done_loading();
 	}
 	
 	function load_zip() {
@@ -121,10 +155,29 @@ const [load_files, load_zip] = (function() {
 })();
 
 
-const save_file = async function(text) {
+/* const save_file = async function(text) {
 	let [file, filename] = await Promise.all(vue.dl_file);
 	console.log(file, filename);
 	saveAs(file, filename);
+} */
+
+const save_file = async function() {
+	if(files.length == 0) {
+		return;
+	} else if(files.length == 1) {
+		let encoded = JSON.stringify(files[0]);
+		let blob = new Blob([encoded],{type: "text/plain"});
+		return [blob, filename];
+	}
+	
+	let zip = new JSZip();
+	for(let filename in files) {
+		zip.file(filename, JSON.stringify(files[filename]));
+	}
+	
+	const file = await zip.generateAsync({type:"blob"});
+	console.log(file, "strings.zip");
+	saveAs(file, "strings.zip");
 }
 
 
