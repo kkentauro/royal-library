@@ -74,23 +74,15 @@ const [load_files, load_zip] = (function() {
 			}
 			
 			outer.attr("filename", filename);
-			
-			if(root.children().length == 0) {
-				root.append(outer);
-				continue;
-			} else {
-				let child;
-				for(let i = 0; i < root.children().length; i++) {
-					child = $(root.children()[i]);
-				
-					if(outer.attr("filename").toLowerCase() < child.attr("filename").toLowerCase()) {
-						break;
-					}
-				}
-				outer.insertAfter(child);
-			}
+			file_divs.push(outer);
 		}
 		
+		file_divs.sort(function(a, b) {
+			const af = $(a).attr("filename").toLowerCase();
+			const bf = $(b).attr("filename").toLowerCase();
+			return (af < bf) ? -1 : ((af > bf) ? 1 : 0);
+		});
+		root.append(file_divs);
 		root.children().accordion({collapsible: true, active: false});
 	}
 	
