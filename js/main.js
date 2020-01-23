@@ -66,9 +66,11 @@ const [load_files, load_zip] = (function() {
 					.prop("rows", 4)
 					.text(tl_pairs[jp]);
 				
-				en_box.on("keydown", function() {
+				const change_func = function() {
 					files[filename].pairs[jp] = en_box.val()
-				});
+				};
+				
+				en_box.on("keydown keyup keypress change paste focusin focusout blur focus", change_func);
 				
 				pairs_div.append($("<p>").append(jp_box).append(en_box));
 			}
